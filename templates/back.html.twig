@@ -46,7 +46,7 @@
 
 
             </div>
-            <div class="sidebar-brand-text mx-3">Champlace</div>
+            <div class="sidebar-brand-text mx-3">Admin</div>
         </a>
 
         <!-- Divider -->
@@ -109,6 +109,21 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{{ path('app_game_index') }}">List Games</a>
                     <a class="collapse-item" href="{{ path('app_game_new') }}">New Game</a>
+                </div>
+            </div>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategorie"
+               aria-expanded="true" aria-controls="collapseCategorie">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Categories</span>
+            </a>
+            <div id="collapseCategorie" class="collapse" aria-labelledby="headingServices" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="{{ path('app_categorie_index') }}">List Categories</a>
+                    <a class="collapse-item" href="{{ path('app_categorie_new') }}">New Categories</a>
                 </div>
             </div>
         </li>

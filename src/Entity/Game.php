@@ -17,13 +17,14 @@ class Game
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;  // 'title' instead of 'name'
+    private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $category = null;
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'games')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $categorie = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?float $rating = null;
@@ -44,7 +45,6 @@ class Game
         return $this->id;
     }
 
-    // Getter for the title property
     public function getTitle(): ?string
     {
         return $this->title;
@@ -69,14 +69,14 @@ class Game
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getCategorie(): ?Categorie
     {
-        return $this->category;
+        return $this->categorie;
     }
 
-    public function setCategory(string $category): static
+    public function setCategorie(?Categorie $categorie): static
     {
-        $this->category = $category;
+        $this->categorie = $categorie;
 
         return $this;
     }

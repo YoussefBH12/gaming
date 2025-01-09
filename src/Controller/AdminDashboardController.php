@@ -14,8 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminDashboardController extends AbstractController
 {
     #[Route('/admin', name: 'admin_dashboard')]
-    public function index(GameRepository $gameRepository, ReservationRepository $reservationRepository, ServiceRepository $serviceRepository ,CategorieRepository $categorieRepository, EntityManagerInterface $entityManager)
-    {
+    public function index(
+        GameRepository $gameRepository,
+        ReservationRepository $reservationRepository,
+        ServiceRepository $serviceRepository,
+        CategorieRepository $categorieRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
         // Get the stats for games
         $gamesStats = $this->getGamesStats($gameRepository);
 
@@ -41,8 +46,9 @@ class AdminDashboardController extends AbstractController
     {
         // Count the number of games in each category
         $query = $gameRepository->createQueryBuilder('g')
-            ->select('g.category, COUNT(g.id) as count')
-            ->groupBy('g.category')
+            ->select('c.name as categorieName, COUNT(g.id) as count') // Select c.name instead of g.categorie
+            ->leftJoin('g.categorie', 'c')  // Join the Categorie entity
+            ->groupBy('c.name')             // Group by the category name
             ->getQuery();
 
         $results = $query->getResult();
@@ -50,7 +56,7 @@ class AdminDashboardController extends AbstractController
         $labels = [];
         $data = [];
         foreach ($results as $result) {
-            $labels[] = $result['category'];
+            $labels[] = $result['categorieName']; // Use categorieName instead of categorie
             $data[] = $result['count'];
         }
 
@@ -96,7 +102,6 @@ class AdminDashboardController extends AbstractController
         return ['labels' => $labels, 'data' => $data];
     }
 
-
     // Fetch statistics for services (e.g., number of reservations per service)
     private function getServicesStats(ServiceRepository $serviceRepository)
     {
@@ -118,13 +123,15 @@ class AdminDashboardController extends AbstractController
 
         return ['labels' => $labels, 'data' => $data];
     }
-    // Add this method to your AdminDashboardController
+
+    // Fetch statistics for categories (e.g., count of games per category)
     private function getCategoriesStats(CategorieRepository $categorieRepository)
     {
-        // Count the number of categories
+        // Count the number of games in each category
         $query = $categorieRepository->createQueryBuilder('c')
-            ->select('c.name, COUNT(c.id) as count')
-            ->groupBy('c.id')
+            ->select('c.name as categorieName, COUNT(g.id) as count') // Select c.name and count games
+            ->leftJoin('c.games', 'g')  // Join the Game entity using the 'games' relationship in Categorie
+            ->groupBy('c.name')         // Group by the category name
             ->getQuery();
 
         $results = $query->getResult();
@@ -132,7 +139,7 @@ class AdminDashboardController extends AbstractController
         $labels = [];
         $data = [];
         foreach ($results as $result) {
-            $labels[] = $result['name'];
+            $labels[] = $result['categorieName'];
             $data[] = $result['count'];
         }
 
@@ -147,6 +154,7 @@ class AdminDashboardController extends AbstractController
             // Pass any necessary data to the view
         ]);
     }
+
     #[Route('/admin/reservations', name: 'admin_reservation_index')]
     public function reservations(): Response
     {
@@ -155,6 +163,7 @@ class AdminDashboardController extends AbstractController
             // Pass any necessary data to the view
         ]);
     }
+
     #[Route('/admin/categories', name: 'admin_categories')]
     public function categories(CategorieRepository $categorieRepository): Response
     {

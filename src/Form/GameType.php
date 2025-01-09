@@ -3,11 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Game;
+use App\Entity\Categorie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class GameType extends AbstractType
 {
@@ -16,11 +17,14 @@ class GameType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('category')
+            ->add('categorie', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'name',
+            ])
             ->add('rating', NumberType::class, [
-                'required' => false,  // You can make it required if needed
-                'scale' => 2,         // Number of decimal places
-                'attr' => ['step' => '0.01'], // Allow decimal input
+                'required' => false,
+                'scale' => 2,
+                'attr' => ['step' => '0.01'],
             ])
             ->add('createdAt', null, [
                 'widget' => 'single_text',

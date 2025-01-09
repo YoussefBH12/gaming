@@ -50,7 +50,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // Redirect to a default route if no target path is saved
-        return new RedirectResponse($this->urlGenerator->generate('user_profile')); // Change 'user_profile' to your default route
+        return new RedirectResponse($this->urlGenerator->generate('app_homepage')); // Change 'user_profile' to your default route
     }
 
     protected function getLoginUrl(Request $request): string
